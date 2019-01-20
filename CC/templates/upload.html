@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <style type="text/css">
+    #image_container{
+		background-color: #efebe9;
+		height: 500px;
+		border-radius: 10px;
+	}
+
+	html,body{
+		margin: 0;
+   		height: 100%;
+		background-image: linear-gradient(to bottom right, #e5ffff, #4dd0e1);
+		background-repeat: no-repeat;
+	}
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+{% endblock %}
+
+{% block content %}
+	{% if filename %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2", id="image_container" style="text-align: center;">
+				<img src="{{filename}}" style="height: 100%; width: 100%; object-fit: contain">
+			</div>
+			<a href="\feed"><button type="button" class="btn">Back to Feed</button></a>
+		</div>
+		
+	</div>
+	
+	{% else %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2", id="image_container" style="text-align: center;">
+				<i class="material-icons" style="font-size:70px; vertical-align: middle; text-align: center;">add_photo_alternate</i>
+			</div>
+		</div>
+		<div class="row">
+			<form action="/" method="POST" enctype="multipart/form-data">
+			  	<div class="col-md-1 col-md-offset-5 col-centered">
+				    <input type="file" name="upload" >
+				    <input type="submit" class="btn btn-info" value="Upload">
+			  	</div>
+			</form>
+		</div>
+	</div>
+	{% endif %}
+
+	
+
+{% endblock %}

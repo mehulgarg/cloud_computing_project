@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    {% for item in images %}
+    	<div class="col-md-4"><p>{{item}}</p><img src="{{item}}"></div>
+    	{% if loop.index %3 == 0 and not loop.last %}
+        </div><div class="row">
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
