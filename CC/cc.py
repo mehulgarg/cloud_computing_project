@@ -1,6 +1,7 @@
 from flask import Flask, render_template,request
 from werkzeug.utils import secure_filename
 import os 
+import pandas as pd
 
 app= Flask(__name__)
 
@@ -11,10 +12,16 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def upload():
 	if(request.method=='POST'):
 		file = request.files['upload']
+		username=request.form['username']
+		tags=request.form['tags']
+		caption=request.form['caption']
+		print(username,tags,caption)
 		filename = secure_filename(file.filename)
 		src = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 		print(src)
 		file.save(src)
+		df=pd.read_csv('database.csv')
+		
 		return(render_template("upload.html", filename="../"+src))
 	return(render_template("upload.html"))
 
@@ -25,3 +32,4 @@ def display_grid():
 	images=["../"+os.path.join(app.config['UPLOAD_FOLDER'], file) for file in images]
 	return(render_template("feed.html",images=images))
 
+app.run(debug=True)
