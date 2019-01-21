@@ -5,12 +5,9 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
     {% for item in images %}
-    	<div class="col-md-4"><p>{{item}}</p><img src="{{item}}"></div>
-    	{% if loop.index %3 == 0 and not loop.last %}
-        </div><div class="row">
-        {% endif %}
+    	<div class="row" style="margin: 40px">
+    	<div class="col-md-4 offset-md-4"><img src="{{item}}" style="width:600px"></div>
+        </div>
     {% endfor %}
-</div>
 {% endblock %}
