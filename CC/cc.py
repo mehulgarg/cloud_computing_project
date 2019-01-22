@@ -50,7 +50,10 @@ def upload():
 		images=[]
 		for i in range(df.shape[0]):
 			tags=df['tags'][i]
-			tags=tags.split(';')
+			if(';' in tags):
+				tags=tags.split(';')
+			else:
+				tags=[tags]
 			for j in tags:
 				if(search==j.strip()):
 					images.append(df['image_src'][i])
