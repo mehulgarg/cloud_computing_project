@@ -24,10 +24,9 @@ def upload():
 		print(src)
 		time1=datetime.datetime.now()
 		file.save(src)
-<<<<<<< HEAD
 		return render_template("upload.html", filename="../"+src)
 	return	render_template("upload.html")
-=======
+
 		likes=0
 		df=pd.read_csv('database.csv')
 		print(type(df['user_name']))
@@ -65,7 +64,6 @@ def upload():
 		return(render_template("feed.html",images=images))
 		#print(search)
 	return(render_template("upload.html"))
->>>>>>> a40b360325f92861d88c653bf05bcf7802d572de
 
 
 @app.route('/feed')
@@ -76,11 +74,5 @@ def display_grid():
 	images=["../"+os.path.join(app.config['UPLOAD_FOLDER'], file) for file in images]
 	return render_template("feed.html",images=images)
 
-<<<<<<< HEAD
 if __name__ == '__main__':
 	app.run(debug = True)
-=======
-
-	
-app.run(debug=True)
->>>>>>> a40b360325f92861d88c653bf05bcf7802d572de
