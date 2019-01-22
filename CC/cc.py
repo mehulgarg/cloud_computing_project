@@ -25,7 +25,6 @@ def upload():
 		time1=datetime.datetime.now()
 		file.save(src)
 		return render_template("upload.html", filename="../"+src)
-	return	render_template("upload.html")
 
 		likes=0
 		df=pd.read_csv('database.csv')
