@@ -19,11 +19,13 @@ def searching():
 			tags=tags.split(';')
 		else:
 			tags=[tags]
+		l_tags=[]
 		for j in tags:
+			l_tags.append(j)
 			if(search==j.strip()):
 				l.append(df['image_src'][i])
 				l.append(df['caption'][i])
-				l.append(df['tags'][i])
+				l.append(l_tags)
 				images.append(l)
 				break
 	return(render_template("feed.html",images=images))
@@ -88,15 +90,16 @@ def display_grid():
 		for i in range(0,len(df)):
 			l=[]
 			l.append("../"+os.path.join(app.config['UPLOAD_FOLDER'], (df.loc[df.index[i],"image_src"]).split('static/')[1]))
-			print(l[0])
 			l.append(df.loc[df.index[i],'caption'])
-			l.append(df.loc[df.index[i],'tags'])
-			tags=list(df.loc[df.index[i],'tags'])
-			for j in range(len(tags)):
-				if(';' in tags[j]):
-					tags[j]=tags[j].split(';')
-				else:
-					tags[j]=[tags[j]]
+			tag_1=df.loc[df.index[i],'tags']
+			l_tags=[]
+			if(';' in tag_1):
+				tag_1=tag_1.split(';')
+				for j in tag_1:
+					l_tags.append(j)
+			else:
+				l_tags.append(tag_1)
+			l.append(l_tags)
 
 			images.append(l)
 		return(render_template("feed.html",images=images,tags=tags))
@@ -118,11 +121,13 @@ def tag_feed():
 				tags=tags.split(';')
 			else:
 				tags=[tags]
+			l_tags=[]
 			for j in tags:
+				l_tags.append(j)
 				if(search==j.strip()):
 					l.append(df['image_src'][i])
 					l.append(df['caption'][i])
-					l.append(df['tags'][i])
+					l.append(l_tags)
 					images.append(l)
 					break
 		return(render_template("feed.html",images=images))
