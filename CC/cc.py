@@ -24,7 +24,7 @@ def upload():
 		print(src)
 		time1=datetime.datetime.now()
 		file.save(src)
-		return render_template("upload.html", filename="../"+src)
+		#return render_template("upload.html", filename="../"+src)
 
 		likes=0
 		df=pd.read_csv('database.csv')
@@ -51,6 +51,7 @@ def upload():
 		df=pd.read_csv('database.csv')
 		images=[]
 		for i in range(df.shape[0]):
+			l=[]
 			tags=df['tags'][i]
 			if(';' in tags):
 				tags=tags.split(';')
@@ -58,7 +59,10 @@ def upload():
 				tags=[tags]
 			for j in tags:
 				if(search==j.strip()):
-					images.append(df['image_src'][i])
+					l.append(df['image_src'][i])
+					l.append(df['caption'][i])
+					l.append(df['tags'][i])
+					images.append(l)
 					break
 		return(render_template("feed.html",images=images))
 		#print(search)
@@ -69,9 +73,37 @@ def upload():
 def display_grid():
 	#images=os.listdir('static')
 	df=pd.read_csv('database.csv')
-	images=[i.split('static/')[1] for i in df['image_src']]
-	images=["../"+os.path.join(app.config['UPLOAD_FOLDER'], file) for file in images]
-	return render_template("feed.html",images=images)
+	images=[]
+	for i in range(0,len(df)):
+		l=[]
+		l.append("../"+os.path.join(app.config['UPLOAD_FOLDER'], (df.loc[df.index[i],"image_src"]).split('static/')[1]))
+		l.append(df.loc[df.index[i],'caption'])
+		l.append(df.loc[df.index[i],'tags'])
+		images.append(l)
+	return(render_template("feed.html",images=images))
 
+
+@app.route('/tag', methods=['GET','POST'])
+def tag_feed():
+	if(request.method=='POST'):
+		tags=request.form['tags']
+		search=tags
+		df=pd.read_csv('database.csv')
+		images=[]
+		for i in range(df.shape[0]):
+			l=[]
+			tags=df['tags'][i]
+			if(';' in tags):
+				tags=tags.split(';')
+			else:
+				tags=[tags]
+			for j in tags:
+				if(search==j.strip()):
+					l.append(df['image_src'][i])
+					l.append(df['caption'][i])
+					l.append(df['tags'][i])
+					images.append(l)
+					break
+		return(render_template("feed.html",images=images))
 if __name__ == '__main__':
 	app.run(debug = True)
