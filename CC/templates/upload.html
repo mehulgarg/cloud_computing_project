@@ -27,6 +27,7 @@
 
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://fonts.googleapis.com/css?family=Aleo" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -52,8 +53,8 @@
 
 	
 	{% else %}
-	<h1 style="font-family:'Comic Sans MS'; text-align: center; position:absolute; top:10%; left: 40% ">Share Kindness!</h1>
-	<div id="carouselExampleControls" class="carousel slide col-md-offset-2" data-ride="carousel" style=" position: relative;top: 100px">
+	<h1 style="font-family: 'Aleo', serif; text-align: center; position:absolute; top:10%; left: 40%; ">Share Kindness!</h1>
+	<div id="carouselExampleControls" class="carousel slide col-md-offset-2" data-ride="carousel" style=" position: relative;top: 100px; width: 100%;">
 		<div class="carousel-inner">
 			<div class="carousel-item active">
 				<img src="../static/p1.jpeg" class="d-block w-100" >
@@ -75,16 +76,25 @@
 		</a>
 	</div>
 
-	<div class="container" style="position: absolute; bottom: 10%">
-		<div class="row">
+	<div class="container" style=	"position: relative; top: 150px;">
 			<form action="/" method="POST" enctype="multipart/form-data">
-			  	<div class="col-md-1 col-md-offset-5 col-centered">
-				    <input type="file" name="upload" >
-				    <input type="text" name="caption" placeholder="Caption your Image!">
+			  		<div class="input-group mb-3">
+					 <div class="input-group-prepend">
+					 	<span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+					 </div>
+					 <div class="custom-file">
+						<input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" name="upload">
+					    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+					  </div>
+					</div>
+				    <div class="input-group mb-3">
+					 <div class="input-group-prepend">
+				    	<span class="input-group-text" id="inputGroup-sizing-default">Caption Your Image</span>
+				  	</div>
+				  	<input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+					</div>
 				    <input type="submit" class="btn btn-info" value="Upload">
-			  	</div>
 			</form>
-		</div>
 	</div>
 	{% endif %}
 
