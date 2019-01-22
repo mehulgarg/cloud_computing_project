@@ -49,8 +49,12 @@ def upload():
 		df=pd.read_csv('database.csv')
 		images=[]
 		for i in range(df.shape[0]):
-			if(search in df['tags'][i]):
-				images.append(df['image_src'][i])
+			tags=df['tags'][i]
+			tags=tags.split(';')
+			for j in tags:
+				if(search==j.strip()):
+					images.append(df['image_src'][i])
+					break
 		return(render_template("feed.html",images=images))
 		#print(search)
 	return(render_template("upload.html"))
