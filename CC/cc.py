@@ -6,6 +6,28 @@ import datetime
 
 app= Flask(__name__)
 
+def searching():
+	print('entered ehre')
+	print('entered')
+	search=request.args['Search']
+	df=pd.read_csv('database.csv')
+	images=[]
+	for i in range(df.shape[0]):
+		l=[]
+		tags=df['tags'][i]
+		if(';' in tags):
+			tags=tags.split(';')
+		else:
+			tags=[tags]
+		for j in tags:
+			if(search==j.strip()):
+				l.append(df['image_src'][i])
+				l.append(df['caption'][i])
+				l.append(df['tags'][i])
+				images.append(l)
+				break
+	return(render_template("feed.html",images=images))
+
 UPLOAD_FOLDER = 'static'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -45,26 +67,7 @@ def upload():
 		df.to_csv('database.csv',index=False)
 		return(render_template("upload.html", filename="../"+src))
 	elif('Search' in request.args):
-		print('entered ehre')
-		print('entered')
-		search=request.args['Search']
-		df=pd.read_csv('database.csv')
-		images=[]
-		for i in range(df.shape[0]):
-			l=[]
-			tags=df['tags'][i]
-			if(';' in tags):
-				tags=tags.split(';')
-			else:
-				tags=[tags]
-			for j in tags:
-				if(search==j.strip()):
-					l.append(df['image_src'][i])
-					l.append(df['caption'][i])
-					l.append(df['tags'][i])
-					images.append(l)
-					break
-		return(render_template("feed.html",images=images))
+		return searching()
 		#print(search)
 	return(render_template("upload.html"))
 
@@ -72,15 +75,26 @@ def upload():
 @app.route('/feed')
 def display_grid():
 	#images=os.listdir('static')
-	df=pd.read_csv('database.csv')
-	images=[]
-	for i in range(0,len(df)):
-		l=[]
-		l.append("../"+os.path.join(app.config['UPLOAD_FOLDER'], (df.loc[df.index[i],"image_src"]).split('static/')[1]))
-		l.append(df.loc[df.index[i],'caption'])
-		l.append(df.loc[df.index[i],'tags'])
-		images.append(l)
-	return(render_template("feed.html",images=images))
+	if('Search' not in request.args): 
+		df=pd.read_csv('database.csv')
+		images=[]
+		tags=[]
+		for i in range(0,len(df)):
+			l=[]
+			l.append("../"+os.path.join(app.config['UPLOAD_FOLDER'], (df.loc[df.index[i],"image_src"]).split('static/')[1]))
+			l.append(df.loc[df.index[i],'caption'])
+			l.append(df.loc[df.index[i],'tags'])
+			tags=list(df.loc[df.index[i],'tags'])
+			for j in range(len(tags)):
+				if(';' in tags[j]):
+					tags[j]=tags[j].split(';')
+				else:
+					tags[j]=[tags[j]]
+
+			images.append(l)
+		return(render_template("feed.html",images=images,tags=tags))
+	else:
+		return searching()
 
 
 @app.route('/tag', methods=['GET','POST'])
