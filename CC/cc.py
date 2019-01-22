@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request
+from flask import Flask, render_template,request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os 
 import pandas as pd
@@ -30,6 +30,12 @@ def searching():
 
 UPLOAD_FOLDER = 'static'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.after_request
+def after_request(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return response
+
 
 @app.route('/', methods=['GET','POST'])
 def upload():
@@ -82,6 +88,7 @@ def display_grid():
 		for i in range(0,len(df)):
 			l=[]
 			l.append("../"+os.path.join(app.config['UPLOAD_FOLDER'], (df.loc[df.index[i],"image_src"]).split('static/')[1]))
+			print(l[0])
 			l.append(df.loc[df.index[i],'caption'])
 			l.append(df.loc[df.index[i],'tags'])
 			tags=list(df.loc[df.index[i],'tags'])
@@ -119,5 +126,17 @@ def tag_feed():
 					images.append(l)
 					break
 		return(render_template("feed.html",images=images))
+
+@app.route('/delete/<img_source>')
+def delete_images(img_source=""):
+	img_path = os.path.join(app.config['UPLOAD_FOLDER'], img_source)
+	# print("Image Path ", img_path)
+	os.remove(img_path)
+	df = pd.read_csv("database.csv")
+	df = df[~df.image_src.str.contains(str(img_path))]
+	df.to_csv('database.csv', sep=',', encoding='utf-8', index=False)
+	return redirect(url_for('display_grid'))
+
+
 if __name__ == '__main__':
 	app.run(debug = True)
