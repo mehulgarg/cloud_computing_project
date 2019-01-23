@@ -10,7 +10,7 @@ def searching():
 	print('entered ehre')
 	print('entered')
 	search=request.args['Search']
-	df=pd.read_csv('database.csv')
+	df=pd.read_csv(r'database.csv')
 	images=[]
 	for i in range(df.shape[0]):
 		l=[]
@@ -57,7 +57,7 @@ def upload():
 		#return render_template("upload.html", filename="../"+src)
 
 		likes=0
-		df=pd.read_csv('database.csv')
+		df=pd.read_csv(r'database.csv')
 		print(type(df['user_name']))
 
 		print(df.columns)
@@ -72,7 +72,7 @@ def upload():
 
 		#print(df['time'],type(df['time']))
 		df.sort_values(by=['time'],axis=0,inplace=True,ascending=[False])
-		df.to_csv('database.csv',index=False)
+		df.to_csv(r'database.csv',index=False)
 		return(render_template("upload.html", filename="../"+src))
 	elif('Search' in request.args):
 		return searching()
@@ -84,7 +84,7 @@ def upload():
 def display_grid():
 	#images=os.listdir('static')
 	if('Search' not in request.args): 
-		df=pd.read_csv('database.csv')
+		df=pd.read_csv(r'database.csv')
 		images=[]
 		tags=[]
 		for i in range(0,len(df)):
@@ -112,7 +112,7 @@ def tag_feed():
 	if(request.method=='POST'):
 		tags=request.form['tags']
 		search=tags
-		df=pd.read_csv('database.csv')
+		df=pd.read_csv(r'database.csv')
 		images=[]
 		for i in range(df.shape[0]):
 			l=[]
@@ -137,9 +137,9 @@ def delete_images(img_source=""):
 	img_path = os.path.join(app.config['UPLOAD_FOLDER'], img_source)
 	# print("Image Path ", img_path)
 	os.remove(img_path)
-	df = pd.read_csv('database.csv')
+	df = pd.read_csv(r'database.csv')
 	df = df[~df.image_src.str.contains(str(img_path))]
-	df.to_csv('database.csv', sep=',', encoding='utf-8', index=False)
+	df.to_csv(r'database.csv', sep=',', encoding='utf-8', index=False)
 	return redirect(url_for('display_grid'))
 
 
