@@ -7,7 +7,7 @@
 {% block content %}
     {% for item in images %}
     	<div class="row" style="margin: 40px">
-    	<div class="col-md-4 offset-md-4" style=" font-size:150%; text-align:center;"><img src="{{item[0]}}" style="width:600px; padding-bottom:0.5em;">
+    	<div class="col-md-4 offset-md-4" style=" font-size:150%; text-align:center;"><img src="{{ url_for('static',filename = item[0]) }}" style="width:600px; padding-bottom:0.5em;">
     	<figcaption align="bottom">{{item[1]}}</figcaption>
     	<form action="/tag" method="POST" enctype="multipart/form-data">
                 {% for x in item[2] %}

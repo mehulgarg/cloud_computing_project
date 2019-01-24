@@ -92,7 +92,8 @@ def display_grid():
 		tags=[]
 		for i in range(0,len(df)):
 			l=[]
-			l.append("../"+os.path.join(app.config['UPLOAD_FOLDER'], (df.loc[df.index[i],"image_src"]).split('static/')[1]))
+			l.append((df.loc[df.index[i],"image_src"]).split('static/')[1])
+			print(l[0])
 			l.append(df.loc[df.index[i],'caption'])
 			tag_1=df.loc[df.index[i],'tags']
 			l_tags=[]
