@@ -30,7 +30,7 @@ def searching():
 				break
 	return(render_template("feed.html",images=images))
 
-UPLOAD_FOLDER = 'static'
+UPLOAD_FOLDER = '/home/ubuntu/flask/static'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.after_request
