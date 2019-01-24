@@ -55,6 +55,7 @@ def upload():
 		src = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 		print(src)
 		time1=datetime.datetime.now()
+		src = "/home/ubuntu/flask/" + src
 		file.save(src)
 		#return render_template("upload.html", filename="../"+src)
 
@@ -75,7 +76,7 @@ def upload():
 		#print(df['time'],type(df['time']))
 		df.sort_values(by=['time'],axis=0,inplace=True,ascending=[False])
 		df.to_csv('/home/ubuntu/flask/database.csv',index=False)
-		return(render_template("upload.html", filename="../"+src))
+		return(render_template("upload.html", filename=filename))
 	elif('Search' in request.args):
 		return searching()
 		#print(search)
