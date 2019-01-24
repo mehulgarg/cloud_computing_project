@@ -1,4 +1,5 @@
 from flask import Flask, render_template,request, redirect, url_for
+import constants
 from werkzeug.utils import secure_filename
 import os 
 import pandas as pd
@@ -10,7 +11,7 @@ def searching():
 	print('entered ehre')
 	print('entered')
 	search=request.args['Search']
-	df=pd.read_csv(r'/home/ubuntu/flask/database.csv')
+	df=pd.read_csv(constants.CWD + "database.csv")
 	images=[]
 	for i in range(df.shape[0]):
 		l=[]
@@ -30,7 +31,7 @@ def searching():
 				break
 	return(render_template("feed.html",images=images))
 
-UPLOAD_FOLDER = '/home/ubuntu/flask/static'
+UPLOAD_FOLDER = 'static'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.after_request
@@ -50,6 +51,7 @@ def upload():
 		caption=request.form['caption']
 		print(username,tags,caption)
 		filename = secure_filename(file.filename)
+		print(filename)
 		src = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 		print(src)
 		time1=datetime.datetime.now()
@@ -57,7 +59,7 @@ def upload():
 		#return render_template("upload.html", filename="../"+src)
 
 		likes=0
-		df=pd.read_csv(r'/home/ubuntu/flask/database.csv')
+		df=pd.read_csv(constants.CWD + "database.csv")
 		print(type(df['user_name']))
 
 		print(df.columns)
@@ -72,7 +74,7 @@ def upload():
 
 		#print(df['time'],type(df['time']))
 		df.sort_values(by=['time'],axis=0,inplace=True,ascending=[False])
-		df.to_csv(r'/home/ubuntu/flask/database.csv',index=False)
+		df.to_csv(constants.CWD + "database.csv",index=False)
 		return(render_template("upload.html", filename="../"+src))
 	elif('Search' in request.args):
 		return searching()
@@ -84,7 +86,7 @@ def upload():
 def display_grid():
 	#images=os.listdir('static')
 	if('Search' not in request.args): 
-		df=pd.read_csv(r'/home/ubuntu/flask/database.csv')
+		df=pd.read_csv(constants.CWD + "database.csv")
 		images=[]
 		tags=[]
 		for i in range(0,len(df)):
@@ -112,7 +114,7 @@ def tag_feed():
 	if(request.method=='POST'):
 		tags=request.form['tags']
 		search=tags
-		df=pd.read_csv(r'/home/ubuntu/flask/database.csv')
+		df=pd.read_csv(constants.CWD + "database.csv")
 		images=[]
 		for i in range(df.shape[0]):
 			l=[]
@@ -137,9 +139,9 @@ def delete_images(img_source=""):
 	img_path = os.path.join(app.config['UPLOAD_FOLDER'], img_source)
 	# print("Image Path ", img_path)
 	os.remove(img_path)
-	df = pd.read_csv(r'/home/ubuntu/flask/database.csv')
+	df = pd.read_csv(constants.CWD + "database.csv")
 	df = df[~df.image_src.str.contains(str(img_path))]
-	df.to_csv(r'/home/ubuntu/flask/database.csv', sep=',', encoding='utf-8', index=False)
+	df.to_csv(constants.CWD + "database.csv", sep=',', encoding='utf-8', index=False)
 	return redirect(url_for('display_grid'))
 
 
