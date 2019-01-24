@@ -55,7 +55,7 @@ def upload():
 		src = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 		print(src)
 		time1=datetime.datetime.now()
-		src = constants.constants.FLASK_PATH + src
+		src = constants.FLASK_PATH + src
 		file.save(src)
 		#return render_template("upload.html", filename="../"+src)
 
@@ -139,9 +139,9 @@ def tag_feed():
 @app.route('/delete/<img_source>')
 def delete_images(img_source=""):
 	img_path = os.path.join(app.config['UPLOAD_FOLDER'], img_source)
-	img_path = constants.FLASK_PATH + img_path
+	full_path = constants.FLASK_PATH + img_path
 	print("Image Path ", img_path)
-	os.remove(img_path)
+	os.remove(full_path)
 	df = pd.read_csv(constants.FLASK_PATH + "database.csv")
 	df = df[~df.image_src.str.contains(str(img_path))]
 	df.to_csv(constants.FLASK_PATH + "database.csv", sep=',', encoding='utf-8', index=False)
