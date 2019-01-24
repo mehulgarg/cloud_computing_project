@@ -1,6 +1,5 @@
 user_name,image_src,likes,caption,tags,time
 lol1,/home/ubuntu/flask/static/architecture-buildings-city-313782.jpg,0,lolcat,lol2,2019-01-24 17:17:28.095074
-lol,/home/ubuntu/flask/static/Screenshot_from_2018-12-31_10-08-56.png,0,cap,lol1,2019-01-24 16:44:19.299269
 mehz,static/Screenshot_from_2019-01-24_16-02-56.png,0,lol,screenshot,2019-01-24 16:35:48.288361
 user10,static/Quotefancy-1700312-3840x2160.jpg,0,You I can is more important than your IQ!!,motivation; quotes,2019-01-23 06:31:02.277062
 s,static/Quotefancy-4674042-3840x2160.jpg,0,s,s,2019-01-22 06:34:44.801256

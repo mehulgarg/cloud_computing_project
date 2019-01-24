@@ -1,2 +1,1 @@
-import os
-CWD = os.getcwd()
+FLASK_PATH = "/home/ubuntu/flask/"
