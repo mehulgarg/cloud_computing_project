@@ -130,7 +130,8 @@ def tag_feed():
 			for j in tags:
 				l_tags.append(j)
 				if(search==j.strip()):
-					l.append(df['image_src'][i])
+					img_path = df['image_src'][i].split('static/')[1]
+					l.append(img_path)
 					l.append(df['caption'][i])
 					l.append(l_tags)
 					images.append(l)
