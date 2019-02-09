@@ -290,17 +290,17 @@ class ListCategory(Resource):
 			response=Response()
 			response.status_code=204
 			return response
-	def post(self,category):
+	def post(self,category,startRange=None,endRange=None):
 		response=Response()
 		response.status_code=405
 		return response
 
-	def delete(self,category):
+	def delete(self,category,startRange=None,endRange=None):
 		response=Response()
 		response.status_code=405
 		return response
 
-	def put(self,category):
+	def put(self,category,startRange=None,endRange=None):
 		response=Response()
 		response.status_code=405
 		return response
