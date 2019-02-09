@@ -1,1 +1,0 @@
-FLASK_PATH = "/home/ubuntu/flask/"
