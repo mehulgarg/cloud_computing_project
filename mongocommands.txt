@@ -1,0 +1,31 @@
+db.dropDatabase()
+use sla
+show collections
+db.createCollection("users")
+db.createCollection("posts")
+db.createCollection("categories")
+db.users.insert([{"username":"Ninaad","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"},{"username":"Malaika","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"},{"username":"Niharika","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"},{"username":"abc","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"}])
+
+db.categories.insert([{"category":"nature","count":3},{"category":"space","count":2},{"category":"humanity","count":2}])
+
+db.posts.insert({"actId": 1234, "username": "john_doe", "timestamp": "18-04-2019:32-32-12", "caption": "be kind", "categoryName": "nature","upvotes":10,"imgB64": "/9j/4AAQSkZJRgABAQEASABIAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gOTYK/9sAQwABAQEBAQEBAQEBAQEBAgIDAgICAgIEAwMCAwUEBQUFBAQEBQYHBgUFBwYEBAYJBgcICAgICAUGCQoJCAoHCAgI/9sAQwEBAQECAgIEAgIECAUEBQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI/8IAEQgIcA8AAwERAAIRAQMRAf"})
+
+db.posts.insert({"actId": 1235, "username": "john_doe", "timestamp": "19-04-2019:32-32-12", "caption": "be kind", "categoryName": "nature","upvotes":10,"imgB64": "/9j/4AAQSkZJRgABAQEAYABgAAD/4RH0RXhpZgAATU0AKgAAAAgACwEOAAIAAAAXAAAIngEPAAIAAAAXAAAItgEQAAIAAAAXAAAIzgE7AAIAAAAXAAAI5odpAAQAAAABAAAI/pybAAEAAAAuAAARHpycAAEAAAAuAAARTJydAAEAAAAuAAARepyeAAEAAAAUAAARqJyfAAEAAAAuAAARvuocAAcAAAgMAAAAkgAAAAAc6gAAAAg"})
+
+db.posts.insert({"actId": 1236, "username": "Ninaad", "timestamp": "20-04-2019:32-32-12", "caption": "be kind", "categoryName": "nature","upvotes":8,"imgB64": "/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gOTYK/9sAQwABAQEBAQEBAQEBAQEBAgIDAgICAgIEAwMCAwUEBQUFBAQEBQYHBgUFBwYEBAYJBgcICAgICAUGCQoJCAoHCAgI/9sAQwEBAQECAgIEAgIECAUEBQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI/8IAEQgIcA8AAwEiAAIRAQMRAf/"})
+
+db.posts.insert({"actId": 1237, "username": "Ninaad", "timestamp": "21-04-2019:32-32-12", "caption": "be kind", "categoryName": "nature","upvotes":6,"imgB64": "/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gOTYK/9sAQwABAQEBAQEBAQEBAQEBAgIDAgICAgIEAwMCAwUEBQUFBAQEBQYHBgUFBwYEBAYJBgcICAgICAUGCQoJCAoHCAgI/9sAQwEBAQECAgIEAgIECAUEBQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI/8IAEQgIcA8AAwEiAAIRAQMRAf"})
+
+
+db.posts.insert({"actId": 1239, "username": "Malaika", "timestamp": "22-04-2019:32-32-12", "caption": "be kind", "categoryName": "space","upvotes":9,"imgB64": "/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gOTYK/9sAQwABAQEBAQEBAQEBAQEBAgIDAgICAgIEAwMCAwUEBQUFBAQEBQYHBgUFBwYEBAYJBgcICAgICAUGCQoJCAoHCAgI/9sAQwEBAQECAgI"})
+
+db.posts.insert({"actId": 1240, "username": "Malaika", "timestamp": "23-04-2019:32-32-12", "caption": "be kind", "categoryName": "space","upvotes":9,"imgB64": "/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gOTYK/9sAQwABAQEBAQEBAQEBAQEBAgIDAgICAgIEAwMCAwUEBQUFBAQEBQYHBgUFBwYEBAYJBgcICAgICAUGCQoJCAoHCAgI/9sAQwEBAQECAgIEAgIECAUEBQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI/8IAEQgIcA8AAwEiAAIRAQMRAf/"})
+
+db.posts.insert({"actId": 1241, "username": "abc", "timestamp": "24-04-2019:32-32-12", "caption": "be kind", "categoryName": "space","upvotes":10,"imgB64": "/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gOTYK/9sAQwABAQEBAQEBAQEBAQEBAgIDAgICAgIEAwMCAwUEBQUFBAQEBQYHBgUFBwYEBAYJBgcICAgICAUGCQoJCAoHCAgI/9sAQwEBAQECAgIEAgIECAUEBQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI/8IAEQgIcA8AAwEiAAIRAQMRA"})
+
+db.posts.insert({"actId": 1242, "username": "abc", "timestamp": "25-04-2019:32-32-12", "caption": "be kind", "categoryName": "humanity","upvotes":10,"imgB64": "/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gOTYK/9sAQwABAQEBAQEBAQEBAQEBAgIDAgICAgIEAwMCAwUEBQUFBAQEBQYHBgUFBwYEBAYJBgcICAgICAUGCQoJCAoHCAgI/9sAQwEBAQECAgIEAg"})
+
+db.posts.insert({"actId": 1243, "username": "Niharika", "timestamp": "26-04-2019:32-32-12", "caption": "be kind", "categoryName":"humanity","upvotes":10,"imgB64":"/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHBwkHBwoJCQkKCgoKDhwPDg4ODiMUFBUcKiMqKh4jHh4qMT84KjE/MR4eOE04PzJGRkZGKjhNVE1GVD9GRkb/2wBDARoaGiYeJksnJ0uWaVpplpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWlpaWl"})
+
+db.posts.insert({"actId": 1244, "username": "Niharika", "timestamp": "27-04-2019:32-32-12", "caption": "be kind", "categoryName": "humanity","upvotes":10,"imgB64": "/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2ODApLCBxdWFsaXR5ID0gOTYK/9sAQwABAQEBAQEBAQEBAQEBAgIDAgICAgIEAwMCAwUEBQUFBAQEBQYHBgUFBwYEBAYJBgcICAgICAUGCQoJCAoHCAgI/9sA"})
+
