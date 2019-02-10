@@ -285,14 +285,13 @@ class ListCategory(Resource):
 				else:
 					records=list(records)
 					keys={'actId','username','timestamp','caption','upvotes','imgB64'}
-					
-					for i in records:
-						all_k=set(i.keys())
+					print(records)
+					for i in range(len(records)):
+						all_k=set(records[i].keys())
 						all_k=all_k-keys
 						for j in all_k:
-							del i[j]
-						for j in i:
-							i[j]['imgB64']=open(i[j]['imgB64']).read()
+							del records[i][j]
+						records[i]['imgB64']=open(records[i]['imgB64']).read()
 					response=jsonify(records)
 					response.status_code=200
 					return response
