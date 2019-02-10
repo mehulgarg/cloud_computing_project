@@ -5,7 +5,7 @@ import re
 import base64
 from datetime import datetime
 from flask_restful import reqparse
-
+import os
 
 pwd_validate = re.compile(r'\b[0-9a-f]{40}\b')
 timestamp_validate = re.compile(r'\b[0-2][0-9]-(0[1-9]|1[0-2])-[0-9][0-9][0-9][0-9]:[0-6][0-9]-[0-5][0-9]-[0-2][0-4]\b')
@@ -22,9 +22,9 @@ class AddUser(Resource):
 		username = request_json['username']
 		password = request_json['password']
 
-		client = MongoClient("mongodb://localhost:27017/")
+		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
 		db = client.sla
-		col = db.user
+		col = db.users
 
 		match = re.match(pwd_validate, password)
 		if(col.find_one({"username" : username})==None and match!=None):
@@ -39,7 +39,7 @@ class AddUser(Resource):
 
 class ListNumActsForCat(Resource):
 	def get(self,category):
-		client = MongoClient("mongodb://localhost:27017/")
+		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
 		db=client.sla
 		col=db.categories
 		print(category)
@@ -66,9 +66,9 @@ class ListNumActsForCat(Resource):
 
 class DelUser(Resource):
 	def delete(self, username):
-		client = MongoClient("mongodb://localhost:27017/")
+		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
 		db = client.sla
-		col = db.user
+		col = db.users
 
 		query = {"username" : username}
 		if(col.find_one(query)!=None):
@@ -77,11 +77,11 @@ class DelUser(Resource):
 
 		return(Response(status=400)) #Bad request (username not found)
 	
-	def get(self):
+	def get(self,username):
 		'''Method not allowed'''
 		return(Response(status=405))
 
-	def post(self):
+	def post(self,username):
 		'''Method not allowed'''
 		return(Response(status=405))
 
@@ -90,7 +90,7 @@ class AddCategory(Resource):
 		request_json = request.get_json()
 		cat = request_json[0]
 
-		client = MongoClient("mongodb://localhost:27017/")
+		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
 		db = client.sla
 		col = db.categories
 
@@ -105,7 +105,7 @@ class AddCategory(Resource):
 		return(Response(405))
 
 	def get(self):
-		client = MongoClient("mongodb://localhost:27017/")
+		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
 		db = client.sla
 		col = db.categories
 
@@ -127,7 +127,7 @@ class AddCategory(Resource):
 
 class DelCategory(Resource):
 	def delete(self, category):
-		client = MongoClient("mongodb://localhost:27017/")
+		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
 		db = client.sla
 		col = db.categories
 
@@ -146,17 +146,22 @@ class AddAct(Resource):
 	def post(self):
 		request_json = request.get_json()
 
-		client = MongoClient("mongodb://localhost:27017/")
+		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
 		db = client.sla
 		posts = db.posts
-		users = db.user
+		users = db.users
 		cat = db.categories
 
 		response=Response()
 		if(posts.find_one({"actId":request_json['actId']})==None and users.find_one({"username":request_json['username']})!=None and not('upvotes' in request_json.keys()) and cat.find_one({"category":request_json['categoryName']})!=None and re.match(timestamp_validate, request_json['timestamp'])!=None):
 			try:
 				img = base64.b64decode(request_json['imgB64'])
-				posts.insert_one(request_json)
+				input_to_mongo=request_json
+				file=open(str(input_to_mongo['actId'])+'.txt','w')
+				file.write(request_json['imgB64'])
+				input_to_mongo['imgB64']='/home/ubuntu/flask/cloud_computing_project/img_b64'+str(input_to_mongo['actId'])+'.txt'
+
+				posts.insert_one(input_to_mongo)
 				cat_post =  cat.find_one({"category": request_json['categoryName']})
 				print(cat_post)
 				print(cat_post['count'])
@@ -178,7 +183,7 @@ class AddAct(Resource):
 
 class DelAct(Resource):
 	def delete(self, actId):
-		client = MongoClient("mongodb://localhost:27017/")
+		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
 		db = client.sla
 		posts = db.posts
 		cat = db.categories
@@ -188,6 +193,8 @@ class DelAct(Resource):
 		if(act!=None):
 			act_cat = cat.find_one({"category":act['categoryName']})
 			update_cat = cat.update(act_cat, {"category": act_cat['category'],'count':act_cat['count']-1})
+			file_name=act['imgB64']
+			os.remove(file_name)
 			posts.delete_one({"actId":int(actId)})
 			response=Response()
 			response.status_code=200
@@ -211,7 +218,7 @@ class ListCategory(Resource):
 	def get(self,category,startRange=None,endRange=None):
 		print('hello please')
 		#print(category)
-		client = MongoClient("mongodb://localhost:27017/")
+		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
 		db = client.sla
 		
 		
@@ -253,6 +260,8 @@ class ListCategory(Resource):
 					for i in range(len(final_list)):
 						del final_list[i]['_id']
 
+					for i in final_list:
+						final_list[i]['imgB64']=open(final_list[i]['imgB64']).read()
 
 					response=jsonify(final_list)
 					response.status_code=200
@@ -282,6 +291,8 @@ class ListCategory(Resource):
 						all_k=all_k-keys
 						for j in all_k:
 							del i[j]
+						for j in i:
+							i[j]['imgB64']=open(i[j]['imgB64']).read()
 					response=jsonify(records)
 					response.status_code=200
 					return response
