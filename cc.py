@@ -11,7 +11,7 @@ def searching():
 	print('entered ehre')
 	print('entered')
 	search=request.args['Search']
-	df=pd.read_csv(constants.FLASK_PATH + "database.csv")
+	df=pd.read_csv(constants.FLASK_PATH + "/cloud_computing_project/database.csv")
 	images=[]
 	for i in range(df.shape[0]):
 		l=[]
@@ -56,12 +56,12 @@ def upload():
 		src = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 		print(src)
 		time1=datetime.datetime.now()
-		src = constants.FLASK_PATH + src
+		src = constants.FLASK_PATH + '/cloud_computing_project/'+src
 		file.save(src)
 		#return render_template("upload.html", filename="../"+src)
 
 		likes=0
-		df=pd.read_csv(constants.FLASK_PATH + "database.csv")
+		df=pd.read_csv(constants.FLASK_PATH + "/cloud_computing_project/database.csv")
 		print(type(df['user_name']))
 
 		print(df.columns)
@@ -76,7 +76,7 @@ def upload():
 
 		#print(df['time'],type(df['time']))
 		df.sort_values(by=['time'],axis=0,inplace=True,ascending=[False])
-		df.to_csv(constants.FLASK_PATH + "database.csv",index=False)
+		df.to_csv(constants.FLASK_PATH + "/cloud_computing_project/database.csv",index=False)
 		return(render_template("upload.html", filename=filename))
 	elif('Search' in request.args):
 		return searching()
@@ -88,10 +88,11 @@ def upload():
 def display_grid():
 	#images=os.listdir('static')
 	if('Search' not in request.args): 
-		df=pd.read_csv(constants.FLASK_PATH + "database.csv")
+		df=pd.read_csv(constants.FLASK_PATH + "/cloud_computing_project/database.csv")
 		images=[]
 		tags=[]
 		for i in range(0,len(df)):
+
 			l=[]
 			l.append((df.loc[df.index[i],"image_src"]).split('static/')[1])
 			print(l[0])
@@ -117,7 +118,7 @@ def tag_feed():
 	if(request.method=='POST'):
 		tags=request.form['tags']
 		search=tags
-		df=pd.read_csv(constants.FLASK_PATH + "database.csv")
+		df=pd.read_csv(constants.FLASK_PATH + "/cloud_computing_project/database.csv")
 		images=[]
 		for i in range(df.shape[0]):
 			l=[]
@@ -141,12 +142,12 @@ def tag_feed():
 @app.route('/delete/<img_source>')
 def delete_images(img_source=""):
 	img_path = os.path.join(app.config['UPLOAD_FOLDER'], img_source)
-	full_path = constants.FLASK_PATH + img_path
+	full_path = constants.FLASK_PATH + '/cloud_computing_project/'+img_path
 	print("Image Path ", img_path)
 	os.remove(full_path)
-	df = pd.read_csv(constants.FLASK_PATH + "database.csv")
+	df = pd.read_csv(constants.FLASK_PATH + "/cloud_computing_project/database.csv")
 	df = df[~df.image_src.str.contains(str(img_path))]
-	df.to_csv(constants.FLASK_PATH + "database.csv", sep=',', encoding='utf-8', index=False)
+	df.to_csv(constants.FLASK_PATH + "/cloud_computing_project/database.csv", sep=',', encoding='utf-8', index=False)
 	return redirect(url_for('display_grid'))
 
 
