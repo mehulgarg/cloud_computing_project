@@ -6,6 +6,7 @@ import base64
 from datetime import datetime
 from flask_restful import reqparse
 import os
+import copy
 
 pwd_validate = re.compile(r'\b[0-9a-f]{40}\b')
 timestamp_validate = re.compile(r'\b[0-2][0-9]-(0[1-9]|1[0-2])-[0-9][0-9][0-9][0-9]:[0-6][0-9]-[0-5][0-9]-[0-2][0-4]\b')
@@ -225,7 +226,8 @@ class ListCategory(Resource):
 		col = db.posts
 		startRange=request.args.get('start')
 		endRange=request.args.get('end')
-		records = col.find({"categoryName":category})
+		record = col.find({"categoryName":category})
+		records=copy.deepcopy(record)
 		if(startRange!=None and endRange!=None):
 			startRange=int(startRange)
 			endRange=int(endRange)
@@ -291,6 +293,7 @@ class ListCategory(Resource):
 						all_k=all_k-keys
 						for j in all_k:
 							del records[i][j]
+						print(records[i])
 						records[i]['imgB64']=open(records[i]['imgB64']).read()
 					response=jsonify(records)
 					response.status_code=200
