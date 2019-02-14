@@ -18,7 +18,6 @@ api = Api(app)
 class Authenticate(Resource):
 	def post(self):
 		request_json = request.get_json()
-		print(request_json)
 		username = request_json['username']
 		password = request_json['password']
 
@@ -28,7 +27,6 @@ class Authenticate(Resource):
 
 		response=Response()
 		user_doc=users.find_one({"username":username,"password":password})
-		print(user_doc)
 		if(user_doc!=None):
 			response.status_code=200
 		else:
@@ -61,7 +59,6 @@ class ListNumActsForCat(Resource):
 		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
 		db=client.sla
 		col=db.categories
-		print(category)
 		cat = col.find_one({"category":category})
 		if(cat!=None):
 			response= jsonify(cat['count'])
@@ -153,7 +150,6 @@ class AddCategory(Resource):
 class DelCategory(Resource):
 	def delete(self, category):
 		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
-		print(client)
 		db = client.sla
 		col = db.categories
 		response=Response()
