@@ -190,9 +190,9 @@ class AddAct(Resource):
 			try:
 				img = base64.b64decode(request_json['imgB64'])
 				input_to_mongo=request_json
-				file=open('/Users/malaika/Desktop/cloud_computing_project/img_b64/'+str(input_to_mongo['actId'])+'.txt','w')
+				file=open('/home/ubuntu/flask/cloud_computing_project/img_b64'+str(input_to_mongo['actId'])+'.txt','w')
 				file.write(request_json['imgB64'])
-				input_to_mongo['imgB64']='/Users/malaika/Desktop/cloud_computing_project/img_b64/'+str(input_to_mongo['actId'])+'.txt'
+				input_to_mongo['imgB64']='/home/ubuntu/flask/cloud_computing_project/img_b64'+str(input_to_mongo['actId'])+'.txt'
 				input_to_mongo['upvotes']=0
 				posts.insert_one(input_to_mongo)
 				cat_post =  cat.find_one({"category": request_json['categoryName']})
@@ -296,7 +296,7 @@ class ListCategory(Resource):
 						for j in all_k:
 							del records[i][j]
 						temp[records[i]['_id']]=records[i]
-
+					print(temp)
 					list1=list(temp.keys())
 					list1.sort(reverse=True)
 					list1 = list1[startRange-1:endRange]
@@ -304,7 +304,7 @@ class ListCategory(Resource):
 					for i in range(len(final_list)):
 						del final_list[i]['_id']
 
-					for i in final_list:
+					for i in range(len(final_list)):
 						final_list[i]['imgB64']=open(final_list[i]['imgB64']).read()
 
 					response=jsonify(final_list)
