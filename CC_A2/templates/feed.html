@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block head %}
+	<style type="text/css">
+		.btn
+		{
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			width:100%;
+			height: 50px;
+			margin-bottom: 2px;
+			margin-top: 2px;
+		}
+
+		.btn-primary
+		{
+			background: #1e88e5;
+			margin-right: 5px;
+			margin-left: 5px;
+		}
+
+		body
+		{
+			background: #fafafa;
+		}
+
+	</style>
+{% endblock %}
+
+{% block content %}
+	<nav class="navbar navbar-expand-sm navbar-light fixed-top justify-content-end" style="background: #1e88e5;">
+	  <ul class="navbar-nav" style="color:white">
+	    <li> 
+	    	<a class="nav-link" href="/feed" style="color:white">Feed</a>
+	    </li>
+	    <li class="nav-item dropdown"
+	    >
+      		<a class="nav-link dropdown-toggle" style="color:white" href="#" id="navbardrop" data-toggle="dropdown">
+        Explore
+      		</a>
+		      <div class="dropdown-menu">
+		      	{% for key, value in categories.items() %}
+             		<a class="dropdown-item" href="/feed/category/{{ key }}">{{ key }}</a>
+              	{% endfor %}
+		      </div>
+    	</li>
+    	<li class="nav-item active">
+	      <a class="nav-link" href="/feed/{{userid}}" style="color:white">{{userid}}</a>
+	    </li>
+	    <li class="nav-item">
+	      <a class="nav-link" href="/" style="color:white">Logout</a>
+	    </li>
+	  </ul>
+	</nav>
+
+	<div style="position: fixed; left: 0%;height: 100%; width:15%; top:100px">
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#category">Add Category <i class="material-icons" style="vertical-align: middle;">playlist_add</i>
+		</button>
+		<br>
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#upload">Upload Image <i class="material-icons" style="vertical-align: middle;">cloud_upload</i>
+		</button>
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#rem_cat">Delete Category <i class="material-icons" style="vertical-align: middle;">delete_outline</i>
+		</button>
+		<form method="POST">
+		<button type="submit" class="btn btn-primary" name="btn" value="unsubscribe">Unsubscribe<i class="material-icons" style="vertical-align: middle;">person_add_disabled</i>
+		</button>
+		</form>
+	</div>
+
+	{% if posts|length > 0 %}
+
+		<div style="position: relative;left: 30%; top:80px">
+			{% for post in posts %}
+				<div class="card" style="width:600px; margin:20px">
+					<div style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+						<h5 class="card-title"><i class="material-icons" style="vertical-align: middle; font-size: 40px">account_circle</i> <a href="/feed/{{post['username']}}"> {{post['username']}} </a></h5>
+					</div>
+					<div class="card-body">
+				    	<p class="card-text">{{post['caption']}}</p>
+				    	<a href="/feed/category/{{post['categoryName']}}">#{{post['categoryName']}}</a>
+	  				</div>
+					<img class="card-img-top" src="data:image/jpeg;base64,{{post['imgB64']}}" alt="Card image" style="height: auto;width: 600px">
+					<div class="card-body">
+				    	<strong><p style="display: inline;">likes</p> <p class="card-text" id="{{post['actId']}}" style="display: inline;">{{post['upvotes']}}</p></strong>
+	  				</div>
+	  				<div class="btn-group" >
+	  					{% if userid == post.username %}
+	  					<form action="/feed" method="POST">
+		  					<button type="submit" class="btn btn-outline-danger" name="btn_del" value="{{post['actId']}}" style="width: 200px">Delete<i class="material-icons" style="vertical-align: middle;">delete_outline</i></button>
+	  					</form>
+	  					{% endif %}
+	  					<button type="button" class="btn btn-outline-primary" id="{{post['actId']}}_btn" onclick="update_likes(this)">Upvote<i class="material-icons" style="vertical-align: middle;" >exposure_plus_1</i></button>
+	  				</div>
+				</div>
+			{% endfor %}
+		</div>
+
+	{% else %}
+	 <i>hourglass_empty</i>
+
+	{% endif %}
+
+	<div id="category" class="modal fade" role="dialog">
+	    <div class="modal-dialog">
+	      <div class="modal-content">
+	        <div class="modal-header" style="background:#e0e0e0">
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          <h4 class="modal-title" id="cat_change">Can't find a tag for your act? Add one!</h4>
+	        </div>
+	        <div class="modal-body">
+	            <form action="/feed" method="POST" enctype="multipart/form-data">
+	              <div class="form-group">
+	                <label for="cat_name">What category do you want to add?</label>
+	                <input type="text" class="form-control" id="cat_name" placeholder="Category" name="category">
+	              </div>
+	              
+	              <button type="submit" class="btn btn-primary" name="btn" value="add_cat" ">Add Category</button>
+	            </form>   
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+	      </div>
+	    </div>
+  	</div>
+
+	<div id="upload" class="modal fade" role="dialog">
+	    <div class="modal-dialog">
+	      <div class="modal-content">
+	        <div class="modal-header" style="background:#e0e0e0">
+	          <h4 class="modal-title">Share an act!</h4>
+	        </div>
+	        <div class="modal-body">
+	            <form action="/feed" method="POST" enctype="multipart/form-data">
+	              
+	              <div class="form-group">
+	              	<label for="fileup">Pick an act to upload</label>
+	                <input type="file" class="form-control" id="fileup" placeholder="Category" name="image">
+	              </div>
+
+	              <div class="caption">
+	                <label for="cat_name">Caption it!</label>
+	                <input type="text" class="form-control" id="caption" placeholder="Caption" name="caption">
+	              </div>
+
+	              <div class="form-group">
+	              	<label for="tag">Tag it!</label>
+	              		<select name="category" class="selectpicker form-control">
+              				{% for key, value in categories.items() %}
+             					<option value="{{ key }}">{{ key }}</option>
+              				{% endfor %}
+           				</select>
+	              </div>
+	              
+	              <button type="submit" class="btn btn-primary" name="btn" value="upload" >Upload!</button>
+	            </form>   
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+	      </div>
+	    </div>
+  	</div>
+
+  	<div id="rem_cat" class="modal fade" role="dialog">
+	    <div class="modal-dialog">
+	      <div class="modal-content">
+	        <div class="modal-header" style="background:#e0e0e0">
+	          <button type="button" class="close" data-dismiss="modal">&times;</button>
+	          <h4 class="modal-title" id="cat_change">Don't think a cateogry belongs here?</h4>
+	        </div>
+	        <div class="modal-body">
+	            <form action="/feed" method="POST" enctype="multipart/form-data">
+	              <div class="form-group">
+	                <label for="cat_name">Tell us which category you want to delete</label>
+	                <input type="text" class="form-control" id="cat_name" placeholder="Category" name="category">
+	              </div>
+	              
+	              <button type="submit" class="btn btn-primary" name="btn" value="rem_cat" ">Remove Category</button>
+	            </form>   
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+	      </div>
+	    </div>
+  	</div>
+
+  	<script type="text/javascript">
+  		function update_likes(like)
+  		{
+  			id_btn=like.id
+  			p_id=id_btn.slice(0,id_btn.indexOf('_'))
+  			console.log(p_id,typeof(p_id))
+  			console.log("http://127.0.0.1:2000/api/v1/acts/update_act/"+p_id)
+
+  			var xhttp = new XMLHttpRequest();
+  			xhttp.onreadystatechange = function() {
+    			if (this.readyState == 4 && this.status == 200) {
+      				p=document.getElementById(p_id);
+  					console.log(p.innerHTML);
+  					p.innerHTML=parseInt(p.innerHTML)+1;
+    			}
+  			};
+  			xhttp.open("POST", "http://127.0.0.1:2000/api/v1/acts/update_act/"+p_id, true)
+  			xhttp.send()
+
+  		}
+  	</script>
+
+
+{% endblock %}
