@@ -418,12 +418,37 @@ class UpdateAct(Resource):
 		return(response)
 
 
+class UpdateAct2(Resource):
+	def post(self,actId):
+		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
+		db = client.sla
+		col = db.posts
+		#request_json = request.get_json()
+		post = col.find_one_and_update({"actId":int(actId)} , {'$inc':{'upvotes':1}},return_document=ReturnDocument.AFTER)
+		if(post==None):
+			response=Response()
+			response.headers['Access-Control-Allow-Origin'] = '*'
+			response.status_code=400
+			return(response)
+		response=Response()
+		response.headers['Access-Control-Allow-Origin'] = '*'
+		response.status_code=200
+		return(response)
+	def get(self,actId):
+		response=Response()
+		response.status_code=405
+		return(response)
+
+
+
 
 api.add_resource(GetFeed,'/api/v1/categories/feed/acts')
 api.add_resource(ListCategory,'/api/v1/categories/<category>/acts')
 api.add_resource(AddUser, '/api/v1/users')
 api.add_resource(DelUser, '/api/v1/users/<username>')
-api.add_resource(UpdateAct,'/api/v1/acts/upvotes')
+api.add_resource(UpdateAct,'/api/v1/acts/upvote')
+api.add_resource(UpdateAct2,'/api/v1/acts/update_act/<actId>')
+
 api.add_resource(AddCategory, '/api/v1/categories')
 api.add_resource(DelCategory, '/api/v1/categories/<category>')
 api.add_resource(AddAct,'/api/v1/acts')
@@ -434,6 +459,6 @@ api.add_resource(getAct,'/api/v1/users/acts/check_act')
 api.add_resource(GetUserFeed,'/api/v1/users/acts/<username>')
 
 
-
+	
 if __name__ == '__main__':
 	app.run(host='127.0.0.1',port=2000,debug = True)
