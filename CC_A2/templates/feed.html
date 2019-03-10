@@ -195,9 +195,7 @@
   			var xhttp = new XMLHttpRequest();
   			xhttp.onreadystatechange = function() {
     			if (this.readyState == 4 && this.status == 200) {
-      				p=document.getElementById(p_id);
-  					console.log(p.innerHTML);
-  					p.innerHTML=parseInt(p.innerHTML)+1;
+      				console.log(this.responseText);
     			}
   			};
   			xhttp.open("POST", "http://127.0.0.1:2000/api/v1/acts/update_act/"+p_id, true)

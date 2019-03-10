@@ -9,8 +9,9 @@ import os
 import copy
 
 pwd_validate = re.compile(r'\b[0-9a-f]{40}\b')
-timestamp_validate = re.compile(r'\b((0[1-9]|[1-2][0-9]|30)-(0[469]|11)-([1-2][0-9][0-9][0-9])|(0[1-9]|[1-2][0-9]|3[0-1])-(0[13578]|1[02])-([1-2][0-9][0-9][0-9])|((0[1-9]|[1-2][0-8])-(02)-([1-2][0-9][0-9][0-9]))|((29)-(02)-([1-2][0-9]([02468][48]|[13579][260])))|((29)-(02)-(1200|1600|2000|2400|2800))):[0-5][0-9]-[0-5][0-9]-[0-2][0-4]\b')
-
+timestamp_validate = re.compile(r'\b((0[1-9]|[1-2][0-9]|30)-(0[469]|11)-([1-2][0-9][0-9][0-9])|(0[1-9]|[1-2][0-9]|3[0-1])-(0[13578]|1[02])-([1-2][0-9][0-9][0-9])|((0[1-9]|[1-2][0-8])-(02)-([1-2][0-9][0-9][0-9]))|((29)-(02)-([1-2][0-9]([02468][48]|[13579][260])))|((29)-(02)-(1200|1600|2000|2400|2800))):[0-5][0-9]-[0-5][0-9]-[0-1][0-9]|[2][0-4]\b')
+#timestamp_validate= re.compile(r'\b())
+path=''
 
 app = Flask(__name__)
 api = Api(app)
@@ -52,6 +53,21 @@ class AddUser(Resource):
 	
 	def get(self):
 		'''Method not allowed'''
+		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
+		db=client.sla
+		col=db.users
+		a=col.distinct('username')
+		print(a)
+		if(len(a)==0):
+			response= Response()
+			response.status_code=204
+			return(response)	
+		else:
+			response= jsonify(a)
+			response.status_code=200 
+			return(response)
+
+
 		return(Response(status=405))
 
 class ListNumActsForCat(Resource):
@@ -80,7 +96,7 @@ class ListNumActsForCat(Resource):
 		return(response)
 
 
-class DelUser(Resource):
+class DelUser(Resource):	
 	def delete(self, username):
 		client = MongoClient("mongodb://127.0.0.1:27017/?gssapiServiceName=mongodb")
 		db = client.sla
@@ -182,26 +198,39 @@ class AddAct(Resource):
 		posts = db.posts
 		users = db.users
 		cat = db.categories
-
-		# print(posts.find_one({"actId":request_json['actId']}), users.find_one({"username":request_json['username']}),not('upvotes' in request_json.keys()),cat.find_one({"category":request_json['categoryName']}),re.match(timestamp_validate, request_json['timestamp']))
-		# print(request_json['timestamp'])
+		file=open('/home/ubuntu/flask/cloud_computing_project/check.txt','w')
+		file.write(str(posts.find_one({"actId":request_json['actId']})))
+		file.write('\n')
+		file.write(str(users.find_one({"username":request_json['username']})))
+		file.write(str(not('upvotes' in request_json.keys())))
+		file.write(str(cat.find_one({"category":request_json['categoryName']})))
+		file.write(str(request_json['timestamp']))
+		file.write(str(re.match(timestamp_validate, request_json['timestamp'])))		
+		file.close()
 		response=Response()
 		if(posts.find_one({"actId":request_json['actId']})==None and users.find_one({"username":request_json['username']})!=None and not('upvotes' in request_json.keys()) and cat.find_one({"category":request_json['categoryName']})!=None and re.match(timestamp_validate, request_json['timestamp'])!=None):
 			try:
 				img = base64.b64decode(request_json['imgB64'])
 				input_to_mongo=request_json
-				file=open('/home/ubuntu/flask/cloud_computing_project/img_b64'+str(input_to_mongo['actId'])+'.txt','w')
+				
+				file=open('/home/ubuntu/flask/cloud_computing_project/img_b64/'+str(input_to_mongo['actId'])+'.txt','w')
 				file.write(request_json['imgB64'])
-				input_to_mongo['imgB64']='/home/ubuntu/flask/cloud_computing_project/img_b64'+str(input_to_mongo['actId'])+'.txt'
+				input_to_mongo['imgB64']='/home/ubuntu/flask/cloud_computing_project/img_b64/'+str(input_to_mongo['actId'])+'.txt'
 				input_to_mongo['upvotes']=0
 				posts.insert_one(input_to_mongo)
 				cat_post =  cat.find_one({"category": request_json['categoryName']})
 				update_cat = cat.update(cat_post,{"category": request_json['categoryName'],"count":cat_post['count']+1})
 				response.status_code=201
+				response.headers['Access-Control-Allow-Origin'] = '*'
+				#file=open('/home/ubuntu/flask/cloud_computing_project/check.txt','w')
+				file.close()
 				return(response)
 			
 			except Exception as e:
-				# print('exception: ',e)
+				print('exception: ',e)
+				file=open('/home/ubuntu/flask/cloud_computing_project/check.txt','w')
+				file.write(e)
+				file.close()
 				response.status_code=400
 				return(response)
 			
@@ -274,6 +303,10 @@ class ListCategory(Resource):
 		record = col.find({"categoryName":category})
 		records=copy.deepcopy(record)
 		if(startRange!=None and endRange!=None):
+			file=open("/home/ubuntu/flask/a.txt","w")
+			file.write(str(records.count()))
+			file.close()
+			
 			startRange=int(startRange)
 			endRange=int(endRange)
 			if(records.count()!=0):
@@ -316,9 +349,9 @@ class ListCategory(Resource):
 				response.status_code=204
 				return(response)
 		else:
-			#print(records)
 			if(records.count()!=0):
 				if(records.count()>100):
+					
 					return Response(413)
 				else:
 					records=list(records)
@@ -416,6 +449,11 @@ class UpdateAct(Resource):
 		response=Response()
 		response.status_code=405
 		return(response)
+	def delete(self):
+		response=Response()
+		response.status_code=405
+		return(response)
+
 
 
 class UpdateAct2(Resource):
@@ -441,19 +479,24 @@ class UpdateAct2(Resource):
 
 
 
-
-api.add_resource(GetFeed,'/api/v1/categories/feed/acts')
-api.add_resource(ListCategory,'/api/v1/categories/<category>/acts')
 api.add_resource(AddUser, '/api/v1/users')
 api.add_resource(DelUser, '/api/v1/users/<username>')
-api.add_resource(UpdateAct,'/api/v1/acts/upvote')
-api.add_resource(UpdateAct2,'/api/v1/acts/update_act/<actId>')
 
 api.add_resource(AddCategory, '/api/v1/categories')
 api.add_resource(DelCategory, '/api/v1/categories/<category>')
-api.add_resource(AddAct,'/api/v1/acts')
-api.add_resource(DelAct, '/api/v1/acts/<actId>')
+api.add_resource(ListCategory,'/api/v1/categories/<category>/acts')
 api.add_resource(ListNumActsForCat,'/api/v1/categories/<category>/acts/size')
+api.add_resource(UpdateAct,'/api/v1/acts/upvote')
+api.add_resource(DelAct, '/api/v1/acts/<actId>')
+api.add_resource(AddAct,'/api/v1/acts')
+
+
+
+
+api.add_resource(GetFeed,'/api/v1/categories/feed/acts')
+
+api.add_resource(UpdateAct2,'/api/v1/acts/update_act/<actId>')
+
 api.add_resource(Authenticate,'/api/v1/users/authenticate')
 api.add_resource(getAct,'/api/v1/users/acts/check_act')
 api.add_resource(GetUserFeed,'/api/v1/users/acts/<username>')

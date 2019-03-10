@@ -1,0 +1,7 @@
+Commands to run to setup dockerfile:
+To find the docker images
+1. sudo docker images
+
+2. sudo docker build -t selfielessact:latest .
+
+3
