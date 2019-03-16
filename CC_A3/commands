@@ -3,7 +3,7 @@ sudo docker rm -f $(sudo docker ps -aq)
 sudo docker rmi $(sudo docker images -q)
 
 
-2. To build the containers: There are two folders users and acts that contain both the dockerfiles and respective python files
+2. To build the containers: There are two folders users and acts that contain both the dockerfiles and respective python files. build users container inside users folder and acts inside acts folder.
 sudo docker build -t users:latest .
 sudo docker build -t acts:latest .
 
