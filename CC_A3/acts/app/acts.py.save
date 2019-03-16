@@ -118,12 +118,14 @@ class DelCategory(Resource):
 class AddAct(Resource):
 	def post(self):
 		request_json = request.get_json()
-
+		print('entered here')
 		db = client.sla
 		posts = db.posts
-		r = requests.get(instance_ip+':8080/'+'api/v1/users')
+		print(instance_ip+':8080/api/v1/users'ssh -i ../cloudcomputingpem ubuntu@ec2-18-215-245-30.compute-1.amazonaws.com
+)
+		r = requests.get(instance_ip+':8080/api/v1/users')
 		r = json.loads(r.text)
-		
+		print(r)
 
 		cat = db.categories
 		file=open('/home/ubuntu/flask/cloud_computing_project/check.txt','w')
