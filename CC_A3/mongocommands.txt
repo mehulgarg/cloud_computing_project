@@ -1,0 +1,31 @@
+db.dropDatabase()
+use sla
+show collections
+db.createCollection("users")
+db.createCollection("posts")
+db.createCollection("categories")
+db.users.insert([{"username":"Ninaad","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"},{"username":"Malaika","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"},{"username":"Niharika","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"},{"username":"abc","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"}])
+
+db.categories.insert([{"category":"nature","count":4},{"category":"space","count":3},{"category":"humanity","count":3}])
+
+db.posts.insert({"actId": 1234, "username": "Malaika", "timestamp": "18-04-2019:32-32-12", "caption": "be kind", "categoryName": "nature","upvotes":10,"imgB64": "/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1234.txt"})
+
+db.posts.insert({"actId": 1235, "username": "Ninaad", "timestamp": "19-04-2019:32-32-12", "caption": "be kind", "categoryName": "nature","upvotes":10,"imgB64": "/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1235.txt"})
+
+db.posts.insert({"actId": 1236, "username": "Ninaad", "timestamp": "20-04-2019:32-32-12", "caption": "be kind", "categoryName": "nature","upvotes":8,"imgB64": "/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1236.txt"})
+
+db.posts.insert({"actId": 1237, "username": "Ninaad", "timestamp": "21-04-2019:32-32-12", "caption": "be kind", "categoryName": "nature","upvotes":6,"imgB64": "/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1237.txt"})
+
+
+db.posts.insert({"actId": 1239, "username": "Malaika", "timestamp": "22-04-2019:32-32-12", "caption": "be kind", "categoryName": "space","upvotes":9,"imgB64": "/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1239.txt"})
+
+db.posts.insert({"actId": 1240, "username": "Malaika", "timestamp": "23-04-2019:32-32-12", "caption": "be kind", "categoryName": "space","upvotes":9,"imgB64": "/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1240.txt"})
+
+db.posts.insert({"actId": 1241, "username": "Malaika", "timestamp": "24-04-2019:32-32-12", "caption": "be kind", "categoryName": "space","upvotes":10,"imgB64": "/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1241.txt"})
+
+db.posts.insert({"actId": 1242, "username": "Niharika", "timestamp": "25-04-2019:32-32-12", "caption": "be kind", "categoryName": "humanity","upvotes":10,"imgB64": "/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1242.txt"})
+
+db.posts.insert({"actId": 1243, "username": "Niharika", "timestamp": "26-04-2019:32-32-12", "caption": "be kind", "categoryName":"humanity","upvotes":10,"imgB64":"/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1243.txt"})
+
+db.posts.insert({"actId": 1244, "username": "Niharika", "timestamp": "27-04-2019:32-32-12", "caption": "be kind", "categoryName": "humanity","upvotes":10,"imgB64": "/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1244.txt"})
+

@@ -1,2 +1,0 @@
-scp -i ../cloudcomputing.pem users.py ubuntu@ec2-54-81-25-94.compute-1.amazonaws.com:/home/ubuntu/flask/cloud_computing_project
-
