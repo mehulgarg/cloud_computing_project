@@ -1,3 +1,5 @@
+IMPORTANT : Install docker-compose!!!!
+
 To define a multi-container app -
 
 cd into the folder containing the Dockerfile and the docker-compose.yml file and run : docker-compose build
