@@ -1,0 +1,24 @@
+To define a multi-container app -
+
+cd into the folder containing the Dockerfile and the docker-compose.yml file and run : docker-compose build
+To run all services: docker-compose up
+
+e.g
+cd cc_users
+docker-compose build
+docker-compose up
+
+To access your container's shell-
+
+get the container id (docker ps)
+docker exec -it <container_id> bash (e.g docker exec -it 9ca96a505f5f bash)
+
+You can then run shell commands within your container
+
+To get a log of what's happening on your container (incoming requests etc.) -
+
+docker logs -f <container-name> (e.g docker logs -f cc_acts_mongo_1)
+
+To shut down all containers - 
+docker-compose down
+
