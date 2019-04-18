@@ -1,4 +1,3 @@
-
 from flask import Flask,request,jsonify,make_response,Response
 from flask_restful import Resource, Api
 from pymongo import MongoClient,ReturnDocument
@@ -12,21 +11,43 @@ import requests
 import json
 pwd_validate = re.compile(r'\b[0-9a-f]{40}\b')
 timestamp_validate = re.compile(r'\b((0[1-9]|[1-2][0-9]|30)-(0[469]|11)-([1-2][0-9][0-9][0-9])|(0[1-9]|[1-2][0-9]|3[0-1])-(0[13578]|1[02])-([1-2][0-9][0-9][0-9])|((0[1-9]|[1-2][0-8])-(02)-([1-2][0-9][0-9][0-9]))|((29)-(02)-([1-2][0-9]([02468][48]|[13579][260])))|((29)-(02)-(1200|1600|2000|2400|2800))):[0-5][0-9]-[0-5][0-9]-[0-1][0-9]|[2][0-4]\b')
-#timestamp_validate= re.compile(r'\b())
-path=''
-instance_ip='http://18.215.245.30'
-# client=MongoClient("mongodb://mongo:27017/?gssapiServiceName=mongodb")
-client = MongoClient('mongo', 27017)
 
+path=''
+instance_ip='http://54.172.183.151'
+client = MongoClient('mongo', 27017)
+db=client.sla
+print(db.list_collection_names())
+col=db.categories
+db.requestCount.insert({'count':0})
+db.crash.insert({'crashed': 0})
+print(col.distinct('category'))
+# client = MongoClient('localhost', 27017)
 app = Flask(__name__)
 api = Api(app)
 
+def isCrashed():
+	db = client.sla
+	crash_var = db.crash.find()[0]['crashed']
+	if crash_var == 0:
+		return False
+	return True
+
+def crashed():
+	return (Response(status = 500))
 
 class ListNumActsForCat(Resource):
 	def get(self,category):
+		if isCrashed():
+			return crashed()
 		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		col=db.categories
 		cat = col.find_one({"category":category})
+		
 		if(cat!=None):
 			response= jsonify(cat['count'])
 			response.status_code=200 
@@ -37,11 +58,27 @@ class ListNumActsForCat(Resource):
 			return(response)	
 
 	def post(self,category):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response= Response()
 		response.status_code=405
 		return(response)
 
 	def delete(self,category):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response= Response()
 		response.status_code=405
 		return(response)
@@ -50,10 +87,17 @@ class ListNumActsForCat(Resource):
 
 class AddCategory(Resource):
 	def post(self):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		request_json = request.get_json()
 		cat = request_json[0]
 
-		db = client.sla
 		col = db.categories
 
 		valid_cat = col.find_one({"category":cat})
@@ -68,14 +112,28 @@ class AddCategory(Resource):
 		return(response)
 
 	def delete(self):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response=Response()
 		response.status_code=405
 		return(response)
 
 	def get(self):
-		db = client.sla
-		col = db.categories
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
 
+		col = db.categories
 
 		records = col.find()
 		if(records!=None):		
@@ -94,7 +152,14 @@ class AddCategory(Resource):
 		
 class DelCategory(Resource):
 	def delete(self, category):
-		db = client.sla
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		col = db.categories
 		response=Response()
 
@@ -107,28 +172,51 @@ class DelCategory(Resource):
 		return(response)
 
 	def get(self,category):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response=Response()
 		response.status_code=405
 		return(response)
 
 
 	def post(self,category):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response=Response()
 		response.status_code=405
 		return(response)
 
 class AddAct(Resource):
 	def post(self):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		request_json = request.get_json()
-		# print('entered here')
-		db = client.sla
+
 		posts = db.posts
 		url=instance_ip+':80/api/v1/users'
 		print(url)
 		r = requests.get(url,allow_redirects=False)
-		# print('finished')
+		print('finished')
 		r = json.loads(r.text)
-		# print(r)
+		print(r)
 
 		cat = db.categories
 		response=Response()
@@ -163,15 +251,45 @@ class AddAct(Resource):
 		print('entered here directly')
 		response.status_code=400
 		return(response)
+	
 	def get(self):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response=Response()
 		response.status_code=405
 		return(response)
 
+	def delete(self):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
+		response=Response()
+		response.status_code=405
+		return response
+
+
 
 class DelAct(Resource):
 	def delete(self, actId):
-		db = client.sla
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		posts = db.posts
 		cat = db.categories
 	
@@ -190,22 +308,47 @@ class DelAct(Resource):
 			response=Response()
 			response.status_code=400
 			return(response)
+	
 	def get(self,actId):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response=Response()
 		response.status_code=405
 		return(response)
 
 	def post(self,actId):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response=Response()
 		response.status_code=405	
 		return(response)
 
 class getAct(Resource):
 	def post(self):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		request_json = request.get_json()
 		actId=int(request_json['actId'])
 		username=request_json['username']
-		db = client.sla
+
 		posts = db.posts
 
 		r = posts.find_one({"actId":actId,"username":username})
@@ -218,9 +361,43 @@ class getAct(Resource):
 			response.status_code=400
 			return(response)
 
+	def get(self):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
+		response=Response()
+		response.status_code=405
+		return response
+
+	def delete(self):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
+		response=Response()
+		response.status_code=405
+		return response
+
+
 class ListCategory(Resource):
 	def get(self,category,startRange=None,endRange=None):
-		db = client.sla
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		col = db.posts
 		startRange=request.args.get('start')
 		endRange=request.args.get('end')
@@ -294,22 +471,48 @@ class ListCategory(Resource):
 			response.status_code=204
 			return response
 	def post(self,category,startRange=None,endRange=None):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response=Response()
 		response.status_code=405
 		return response
 
 	def delete(self,category,startRange=None,endRange=None):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response=Response()
 		response.status_code=405
 		return response
 
 	def put(self,category,startRange=None,endRange=None):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response=Response()
 		response.status_code=405
 		return response
 
 class GetFeed(Resource):
 	def get(self):
+		if isCrashed():
+			return crashed()
 		db = client.sla
 		col = db.posts
 
@@ -328,6 +531,8 @@ class GetFeed(Resource):
 
 class GetUserFeed(Resource):
 	def post(self,username):
+		if isCrashed():
+			return crashed()
 		db = client.sla
 		col = db.posts
 
@@ -352,7 +557,14 @@ class GetUserFeed(Resource):
 
 class UpdateAct(Resource):
 	def post(self):
-		db = client.sla
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		col = db.posts
 		request_json = request.get_json()
 		actId=request_json[0]
@@ -366,36 +578,168 @@ class UpdateAct(Resource):
 		response.headers['Access-Control-Allow-Origin'] = '*'
 		response.status_code=200
 		return(response)
+
 	def get(self):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response=Response()
 		response.status_code=405
 		return(response)
+	
 	def delete(self):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
 		response=Response()
 		response.status_code=405
 		return(response)
 
 
+class RequestsCount(Resource):
+	def get(self):
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
 
-class UpdateAct2(Resource):
-	def post(self,actId):
-		db = client.sla
-		col = db.posts
-		#request_json = request.get_json()
-		post = col.find_one_and_update({"actId":int(actId)} , {'$inc':{'upvotes':1}},return_document=ReturnDocument.AFTER)
-		if(post==None):
-			response=Response()
-			response.headers['Access-Control-Allow-Origin'] = '*'
-			response.status_code=400
-			return(response)
-		response=Response()
-		response.headers['Access-Control-Allow-Origin'] = '*'
+		col = db.requestCount
+		response = jsonify([col.find()[0]['count']])
+		response.status_code=200 
+		return(response)
+
+	def post(self):
+		if isCrashed():
+			return crashed()
+		return(Response(status=405))
+
+	def delete(self):
+
+		if isCrashed():
+			return crashed()
+		db=client.sla
+		col = db.requestCount
+		col.update({},{'count': 0})
+		counter =0
+		return(Response(status=200))
+
+
+class ActsCount(Resource):
+	def get(self,category):
+		if isCrashed():
+			return crashed()
+
+
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
+		col=db.users
+		a=col.distinct('username')
+		
+		response=jsonfiy([len(a)])
 		response.status_code=200
 		return(response)
-	def get(self,actId):
-		response=Response()
+
+	def post(self,category):
+		if isCrashed():
+			return crashed()
+
+
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
+		response= Response()
 		response.status_code=405
 		return(response)
+
+	def delete(self,category):
+		if isCrashed():
+			return crashed()
+
+		db=client.sla
+		counter = db.requestCount.find()[0]['count']
+		counter+=1
+		col = db.requestCount
+		col.update({},{'count': counter})
+
+		response= Response()
+		response.status_code=405
+		return(response)
+
+class HealthCheck(Resource):
+	def get(self):
+		try:
+			if isCrashed():
+				return crashed()
+			db = client.sla
+			col = db['health']
+			mydict = {"healthy" : "YUPP"}
+			ret_val = col.insert_one(mydict)
+			col.delete_many({})
+
+			response = Response()
+			response.status_code = 200
+			return(response)
+
+		except Exception as e:
+			response = Response()
+			response.status_code = 500
+			return(response)
+
+	def post(self):
+		if isCrashed():
+			return crashed()
+		response = Response()
+		response.status_code = 405
+		return(response)
+
+	def delete(self):
+		if isCrashed():
+			return crashed()
+		response = Response()
+		response.status_code = 405
+		return(response)
+
+
+class CrashContainer(Resource):
+	def get(self):
+		if isCrashed():
+			return crashed()
+		else:
+			return(Response(status = 405))
+
+	def post(self):
+		if isCrashed():
+			return crashed()
+		
+		col = db.crash
+		col.update({},{'crashed': 1})
+		return(Response(status = 200))
+
+	
+	def delete(self):
+		if isCrashed():
+			return crashed()
+		
+		return (Response(status = 405))
+
+
 
 
 
@@ -407,13 +751,17 @@ api.add_resource(UpdateAct,'/api/v1/acts/upvote')
 api.add_resource(DelAct, '/api/v1/acts/<actId>')
 api.add_resource(AddAct,'/api/v1/acts')
 
+api.add_resource(HealthCheck,'/api/v1/_health')
+api.add_resource(CrashContainer, '/api/v1/_crash')
 
 api.add_resource(GetFeed,'/api/v1/categories/feed/acts')
-api.add_resource(UpdateAct2,'/api/v1/acts/update_act/<actId>')
 api.add_resource(getAct,'/api/v1/users/acts/check_act')
 api.add_resource(GetUserFeed,'/api/v1/users/acts/<username>')
+api.add_resource(RequestsCount,'/api/v1/_count')
+api.add_resource(ActsCount,'/api/v1/acts/count')
 
 
 	
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',port=80,debug = True)
+	# app.run(debug=True)
