@@ -2,12 +2,14 @@ db.dropDatabase()
 use sla
 show collections
 db.createCollection("users")
-db.createCollection("posts")
-db.createCollection("categories")
+db.creaateCollections("requestCount")
+db.requestCount.insert({"count":0})
 db.users.insert([{"username":"Ninaad","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"},{"username":"Malaika","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"},{"username":"Niharika","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"},{"username":"abc","password":"3d725109c7e7c0bfb9d709836735b56d943d263f"}])
 
 db.categories.insert([{"category":"nature","count":4},{"category":"space","count":3},{"category":"humanity","count":3}])
 
+db.createCollection("posts")
+db.createCollection("categories")
 db.posts.insert({"actId": 1234, "username": "Malaika", "timestamp": "18-04-2019:32-32-12", "caption": "be kind", "categoryName": "nature","upvotes":10,"imgB64": "/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1234.txt"})
 
 db.posts.insert({"actId": 1235, "username": "Ninaad", "timestamp": "19-04-2019:32-32-12", "caption": "be kind", "categoryName": "nature","upvotes":10,"imgB64": "/home/ninaad/cs-6th sem/cc/cloud_computing_project/img_b64/1235.txt"})

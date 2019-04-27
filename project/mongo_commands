@@ -1,0 +1,17 @@
+db.dropDatabase()
+use container_meta
+show collections
+db.createCollection("containers")
+db.createCollection("counts")
+db.createCollection('requests')
+db.counts.insert({'counts':0})
+db.requests.insert({'requests':0})
+
+
+db.requests.update({'requests':0},{$set: {'requests':21}});
+db.requests.update({'requests':21},{$set: {'requests':2}})
+
+
+
+
+scp -i ../cloudcomputing.pem project/auto_scaling.py ubuntu@ec2-18-212-7-156.compute-1.amazonaws.com:/home/ubuntu/cloud_computing_project/project/
