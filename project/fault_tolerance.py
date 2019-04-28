@@ -37,6 +37,7 @@ def fault_check():
     container_list = list(col.find())
     for i in range(len(container_list)):
         port_no = col.find()[i]['port']
+        port_no = int(port_no)
         res = requests.get('http://127.0.0.1:'+str(port_no)+'/api/v1/_health')
          
 
@@ -49,6 +50,7 @@ def fault_check():
             if(col.find()[i]['current']==1):
                 next_port = col.find_one({"port":port_no+1})
                 if(next_port):
+                    next_port = int(next_port)
                     res = requests.get('http://127.0.0.1:'+str(next_port)+'/api/v1/_health')
                     if(res.statuscode==200):
                         col.update_one({"port":port_no+1},{'$set': {'current':1}})
