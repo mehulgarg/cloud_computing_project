@@ -8,6 +8,7 @@ from flask_restful import reqparse
 import os
 import copy
 import requests
+crash_var = 0
 import json
 pwd_validate = re.compile(r'\b[0-9a-f]{40}\b')
 timestamp_validate = re.compile(r'\b((0[1-9]|[1-2][0-9]|30)-(0[469]|11)-([1-2][0-9][0-9][0-9])|(0[1-9]|[1-2][0-9]|3[0-1])-(0[13578]|1[02])-([1-2][0-9][0-9][0-9])|((0[1-9]|[1-2][0-8])-(02)-([1-2][0-9][0-9][0-9]))|((29)-(02)-([1-2][0-9]([02468][48]|[13579][260])))|((29)-(02)-(1200|1600|2000|2400|2800))):[0-5][0-9]-[0-5][0-9]-[0-1][0-9]|[2][0-4]\b')
@@ -19,18 +20,27 @@ db=client.sla
 print(db.list_collection_names())
 col=db.categories
 db.requestCount.insert({'count':0})
-db.crash.insert({'crashed': 0})
+
+
+f = open('crash', 'w')
+f.write("0")
+f.close()
+
+
 print(col.distinct('category'))
 # client = MongoClient('localhost', 27017)
 app = Flask(__name__)
 api = Api(app)
 
 def isCrashed():
-	db = client.sla
-	crash_var = db.crash.find()[0]['crashed']
-	if crash_var == 0:
-		return False
-	return True
+	try:
+		f = open('crash', 'r')
+		crash_var = int(f.read())
+		if crash_var == 0:
+			return False
+		return True
+	except Exception as e:
+		print(e)
 
 def crashed():
 	return (Response(status = 500))
@@ -727,9 +737,10 @@ class CrashContainer(Resource):
 	def post(self):
 		if isCrashed():
 			return crashed()
-		
-		col = db.crash
-		col.update({},{'crashed': 1})
+
+		f = open('crash', 'w')
+		f.write("1")
+		f.close()
 		return(Response(status = 200))
 
 	
