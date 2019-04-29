@@ -97,6 +97,7 @@ def check_status():
 		container_remove.stop(timeout=1)
 		client.containers.prune()
 		print('finished removing')
+		col.delete_one({'port':container_to_be_removed})
 		counts-=1
 	#requests collections are of type {'counts':<value_of_counts>}
 	#update c in the database to the value of k

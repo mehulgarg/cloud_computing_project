@@ -15,7 +15,7 @@ sudo docker exec -ti mongo mongo
 
 5. Pulling and running the mongo image on my-network and exposing port number 27017 
 sudo docker pull mvertes/alpine-mongo
-sudo docker run -d  --name mongo --net my-network -p 27017:27018 mvertes/alpine-mongo
+sudo docker run -d  --name mongo --net my-network -p 27017:27017 mvertes/alpine-mongo
 
 4. Creating a network
 sudo docker network create my-network
