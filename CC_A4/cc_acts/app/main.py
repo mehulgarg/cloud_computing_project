@@ -240,7 +240,7 @@ class AddAct(Resource):
 				response.status_code=201
 				response.headers['Access-Control-Allow-Origin'] = '*'
 				#file=open('/home/ubuntu/flask/cloud_computing_project/check.txt','w')
-				file.close()
+				#file.close()
 				return(response)
 			
 			except Exception as e:
