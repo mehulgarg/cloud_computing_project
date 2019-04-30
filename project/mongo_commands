@@ -2,9 +2,7 @@ db.dropDatabase()
 use container_meta
 show collections
 db.createCollection("containers")
-db.createCollection("counts")
 db.createCollection('requests')
-db.counts.insert({'counts':0})
 db.requests.insert({'requests':0})
 
 

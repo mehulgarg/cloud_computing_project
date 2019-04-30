@@ -24,12 +24,6 @@ path=''
 instance_ip='http://18.215.245.30'
 # client=MongoClient("mongodb://mongo:27017/?gssapiServiceName=mongodb")
 client = MongoClient('mongodb://127.0.0.1', 27017)
-
-#sudo docker run --link mongo:mongo --net my-network -d -p 8080:80 -e TEAM_ID="CC_189_206_229_232​" users:latest
-
-#adding another container:	docker.containers.run('image',auto_remove=1,detach=1,environment=["TEAM_ID=CC_189_206_229_232​"],links={'mongo':'mongo'},network='my-network',ports={'80/tcp':get_next_port()},publish_all_ports=1)
-#removing a container: doc
-#update_round_robin()
 def get_next_port():
 	client = MongoClient('mongodb://127.0.0.1', 27017)
 	db=client.container_meta
@@ -48,22 +42,20 @@ def update_round_robin():
 def check_status():
 	threading.Timer(10.0, check_status).start()
 	client = MongoClient('mongodb://127.0.0.1', 27017)
-	print('routine started')
 	db=client.container_meta
 	col=db.containers
 
 	#{id:}
-	print('col done')
 	container_counts=db.counts
-	print('requests done')
 	counts=container_counts.find_one()
 	requests=db.requests
 	value_required=requests.find_one()
 	value_required=value_required['requests']
-	print('done',value_required)
-	counts=int(counts['counts'])
+	counts=col.find({}).count()
 	print('counts is ',counts)
 	value_required=value_required//20+1
+	requests.update_one({},{'$set':{'requests':0}})
+
 	print('value_required',value_required)
 	client = docker.from_env()
 	# There has to be a database which says the number of containers that are running.
@@ -71,13 +63,13 @@ def check_status():
 	while(value_required>counts):
 		#adding containers
 		port_allocated=get_next_port()
-		new_container=client.containers.run('cc_acts_web',detach=1,environment=["TEAM_ID=CC_189_206_229_232​"],links={'mongo':'mongo'},network='my-network',ports={'80/tcp':port_allocated})
+		new_container=client.containers.run('cc_acts_web',detach=1,volumes={"/home/ubuntu/project": {"bind": "/home/ubuntu/","mode": "rw"}},environment=["TEAM_ID=CC_189_206_229_232​"],links={'mongo':'mongo'},network='my-network',ports={'80/tcp':port_allocated})
 		print('finished adding and the id is',new_container.id)
 		counts+=1
 		col=db.containers
 
 
-		col.insert_one({'id':new_container.id,'current':0,'port':port_allocated})
+		col.insert_one({'id':new_container.id,'current':0,'port':port_allocated,'active':1})
 	while(value_required<counts):
 		#removing containers
 		container_present=col.find()
