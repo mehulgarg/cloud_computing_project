@@ -75,12 +75,11 @@ def fault_check():
 			active_status = int(active_status)
 			if(active_status==0):
 			    continue
-			while(1):
-				try:
-					res = requests.get('http://localhost:'+str(port_no)+'/api/v1/_health')
-					break
-				except:
-					pass
+
+			res = requests.get('http://localhost:'+str(port_no)+'/api/v1/_health')
+			f = open('thing','a+')
+			f.write('http://0.0.0.0:'+str(port_no)+'/api/v1/_health')
+			f.close()  
 			if(res.status_code == 200):
 			    continue
 			elif(res.status_code != 200):
@@ -251,3 +250,4 @@ api.add_resource(Route,'{}<path:catch_all>'.format("/api/v1/"))
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',port= 80,debug = True)
+
